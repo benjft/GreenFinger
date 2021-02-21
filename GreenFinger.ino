@@ -6,6 +6,7 @@
 #define EEPROM_DEFAULT 0xff
 
 #define RESET_PIN 12
+#define PIN_TEST A3
 
 #define N_ANALOG 8
 const uint8_t ANALOG_PINS[N_ANALOG] {A0, A1, A2, A3, A4, A5, A6, A7};
@@ -71,6 +72,10 @@ void loop() {
 	for (size_t z = 0; z < N_ZONES; z++) {
 		zones[z].loop();
 	}
+
+//   int v = analogRead(ANALOG_PINS[1]);
+//   Serial.println(v);
+  delay(500);
 }
 
 void serialSet(String s) {
@@ -94,8 +99,9 @@ void serialSet(String s) {
 	} else {
 		int value;
 		if (s.length() == 0) {
-			int value = zone->getRawValue();
-      Serial.println("set to raw");
+			value = zone->getRawValue();
+     		Serial.print("set to raw: ");
+			Serial.println(value);
 		} else {
 			value = s.toInt();
 		}
@@ -134,6 +140,10 @@ void serialGet(String s) {
 		Serial.println(zone->getHighValue());
 	} else if (prop == "time") {
 		Serial.println(zone->getPumpTime());
+	} else if (prop == "raw") {
+    	Serial.println(zone->getRawValue());
+	} else if (prop == "mapped") {
+    	Serial.println(zone->getMappedValue());
 	}
 }
 

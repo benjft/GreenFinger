@@ -84,6 +84,9 @@ int Zone::getMappedValue(const int &low, const int &high) const {
 }
 
 void Zone::loop() {
+    if (this->sensorPin == UNSET_PIN || this->pumpPin == UNSET_PIN) {
+        return;
+    }
     auto sens = this->getMappedValue();
     if (sens > 75) {
         this->pumping = false;
@@ -100,8 +103,12 @@ void Zone::loop() {
     if (this->triggered) {
         unsigned long uptime = millis() / 1000;
         unsigned long dt = uptime - this->since;
+        char buff[30];
+        sprintf(buff, "P:%d %d S:%d T:%d", this->pumpPin, pumping, sens, dt);
+        Serial.println(buff);
         if (dt >= this->pumpTime) {
             this->pumping = !this->pumping;
+            this->since = millis() / 1000;
         }
 
         if (this->pumping) {
